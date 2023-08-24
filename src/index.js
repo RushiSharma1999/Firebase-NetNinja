@@ -1,7 +1,10 @@
 import {initializeApp} from 'firebase/app';
 import{
     getFirestore, collection, onSnapshot,
-    addDoc, deleteDoc, doc
+    addDoc, deleteDoc, doc,
+    query, where,
+    orderBy, serverTimestamp,
+    getDoc,
 } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -22,8 +25,11 @@ const db = getFirestore();
 //collection references
 const colRef = collection(db, 'books');
 
+//queries
+const q = query(colRef, orderBy("createdAt"));
+
 //realtime collection data
-onSnapshot(colRef, (snapshot) => {
+onSnapshot(q, (snapshot) => {
     let books = [];
     snapshot.forEach((doc) => {
         books.push({
@@ -44,11 +50,13 @@ addBookForm.addEventListener('submit', (e) => {
     //store form values in variables
     const title = addBookForm.title.value;
     const author = addBookForm.author.value;
+    const createdAt = serverTimestamp();
 
     //add document to collection with values received from form
     addDoc(colRef, {
         title, 
-        author
+        author,
+        createdAt
     })
     .then(() => {
     //reset form once new doc is added
