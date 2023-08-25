@@ -4,7 +4,7 @@ import{
     addDoc, deleteDoc, doc,
     query, where,
     orderBy, serverTimestamp,
-    getDoc,
+    getDoc, updateDoc,
 } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -85,5 +85,39 @@ deleteBookForm.addEventListener('submit', (e) => {
         deleteBookForm.reset();
     })
 });
+
+//fetcg single document
+const docRef = doc(db, 'books', 'I0RQ39s4TMmHZRZLGB3k');
+
+//get document
+onSnapshot(docRef, (doc) => {
+    //print document data and id to console
+    console.log(doc.data(), doc.id);
+})
+
+//update document
+const updateForm = document.querySelector('.update')
+//listen for submit event on the form
+updateForm.addEventListener('submit', (e) => {
+    //prevent default action which is refersing screen
+    e.preventDefault();
+
+    //store document reference in a variable
+    const docRef = doc(db, 'books', updateForm.id.value);
+
+    //store form values in variables
+    const title = updateForm.title.value;
+
+    //update document
+    updateDoc(docRef, {
+        title: "Updated Title"
+    })
+    .then(() => {
+        //reset form once doc is deleted
+        updateForm.reset();
+    });
+});
+
+
 
 
