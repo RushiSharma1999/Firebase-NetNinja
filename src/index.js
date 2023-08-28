@@ -9,6 +9,7 @@ import{
 import {
     getAuth,
     createUserWithEmailAndPassword,
+    signInWithEmailAndPassword, signOut,
 } from 'firebase/auth';
 
 const firebaseConfig = {
@@ -141,6 +142,45 @@ signupForm.addEventListener('submit', (e) => {
         console.log('user created: ', cred.user);
         //clear form
         signupForm.reset();
+    })
+    .catch((err) => {
+        console.log(err.message);
+    })
+});
+
+//sign in
+const loginForm = document.querySelector('.login');
+//listen for submit event on the form
+loginForm.addEventListener('submit', (e) => {
+    //prevent default action which is refersing screen
+    e.preventDefault();
+
+    //get user info
+    const email = loginForm.email.value;
+    const password = loginForm.password.value;
+
+    //sign in user
+    signInWithEmailAndPassword(auth, email, password)
+    .then((cred) => {
+        //display user info on console
+        console.log('user logged in: ', cred.user);
+        //clear form
+        loginForm.reset();
+    })
+    .catch((err) => {
+        //display error message on console
+        console.log(err.message);
+    })
+});
+
+//sign out
+const logout = document.querySelector('.logout');
+//listen for click event on the button
+logout.addEventListener('click', () => {
+
+    signOut(auth)
+    .then(() => {
+        console.log('user signed out');
     })
     .catch((err) => {
         console.log(err.message);
